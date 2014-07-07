@@ -1,4 +1,8 @@
 ﻿using System;
+
+using Mgnd.Paired.Web.Models;
+using Mgnd.Paired.Web.Providers;
+
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -7,9 +11,8 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.OAuth;
+
 using Owin;
-using Mgnd.Paired.Web.Models;
-using Mgnd.Paired.Web.Providers;
 
 namespace Mgnd.Paired.Web
 {
@@ -21,13 +24,13 @@ namespace Mgnd.Paired.Web
             PublicClientId = "web";
 
             OAuthOptions = new OAuthAuthorizationServerOptions
-            {
-                TokenEndpointPath = new PathString("/Token"),
-                AuthorizeEndpointPath = new PathString("/Account/Authorize"),
-                Provider = new ApplicationOAuthProvider(PublicClientId),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-                AllowInsecureHttp = true
-            };
+                               {
+                                   TokenEndpointPath = new PathString("/Token"),
+                                   AuthorizeEndpointPath = new PathString("/Account/Authorize"),
+                                   Provider = new ApplicationOAuthProvider(PublicClientId),
+                                   AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                                   AllowInsecureHttp = true
+                               };
         }
 
         public static OAuthAuthorizationServerOptions OAuthOptions { get; private set; }
@@ -42,17 +45,20 @@ namespace Mgnd.Paired.Web
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
 
             // Enable the application to use a cookie to store information for the signed in user
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login"),
-                Provider = new CookieAuthenticationProvider
-                {
-                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
-                        validateInterval: TimeSpan.FromMinutes(20),
-                        regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
-                }
-            });
+            app.UseCookieAuthentication(
+                new CookieAuthenticationOptions
+                    {
+                        AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                        LoginPath = new PathString("/Account/Login"),
+                        Provider =
+                            new CookieAuthenticationProvider
+                                {
+                                    OnValidateIdentity =
+                                        SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
+                                            validateInterval: TimeSpan.FromMinutes(20),
+                                            regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+                                }
+                    });
             // Use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 

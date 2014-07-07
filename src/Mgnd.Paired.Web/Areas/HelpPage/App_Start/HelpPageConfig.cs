@@ -25,12 +25,9 @@ namespace Mgnd.Paired.Web.Areas.HelpPage
     /// </summary>
     public static class HelpPageConfig
     {
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
-            MessageId = "Mgnd.Paired.Web.Areas.HelpPage.TextSample.#ctor(System.String)",
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Mgnd.Paired.Web.Areas.HelpPage.TextSample.#ctor(System.String)",
             Justification = "End users may choose to merge this string with existing localized resources.")]
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly",
-            MessageId = "bsonspec",
-            Justification = "Part of a URI.")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "bsonspec", Justification = "Part of a URI.")]
         public static void Register(HttpConfiguration config)
         {
             //// Uncomment the following to use the documentation from XML documentation file.
@@ -55,9 +52,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage
             // Extend the following to use a preset object directly as the sample for all actions that support a media
             // type, regardless of the body parameter or return type. The lines below avoid display of binary content.
             // The BsonMediaTypeFormatter (if available) is not used to serialize the TextSample object.
-            config.SetSampleForMediaType(
-                new TextSample("Binary JSON content. See http://bsonspec.org for details."),
-                new MediaTypeHeaderValue("application/bson"));
+            config.SetSampleForMediaType(new TextSample("Binary JSON content. See http://bsonspec.org for details."), new MediaTypeHeaderValue("application/bson"));
 
             //// Uncomment the following to use "[0]=foo&[1]=bar" directly as the sample for all actions that support form URL encoded format
             //// and have IEnumerable<string> as the body parameter or return type.

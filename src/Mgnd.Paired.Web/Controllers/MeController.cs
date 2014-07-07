@@ -5,12 +5,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+
+using Mgnd.Paired.Web.Models;
+
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+
 using Owin;
-using Mgnd.Paired.Web.Models;
 
 namespace Mgnd.Paired.Web.Controllers
 {

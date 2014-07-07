@@ -5,12 +5,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
+using Mgnd.Paired.Web.Models;
+
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+
 using Owin;
-using Mgnd.Paired.Web.Models;
 
 namespace Mgnd.Paired.Web.Controllers
 {
@@ -269,12 +272,13 @@ namespace Mgnd.Paired.Web.Controllers
         // GET: /Account/Manage
         public ActionResult Manage(ManageMessageId? message)
         {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : "";
+            ViewBag.StatusMessage = message == ManageMessageId.ChangePasswordSuccess
+                                        ? "Your password has been changed."
+                                        : message == ManageMessageId.SetPasswordSuccess
+                                              ? "Your password has been set."
+                                              : message == ManageMessageId.RemoveLoginSuccess
+                                                    ? "The external login was removed."
+                                                    : message == ManageMessageId.Error ? "An error has occurred." : "";
             ViewBag.HasLocalPassword = HasPassword();
             ViewBag.ReturnUrl = Url.Action("Manage");
             return View();
@@ -480,6 +484,7 @@ namespace Mgnd.Paired.Web.Controllers
         }
 
         #region Helpers
+
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -523,8 +528,11 @@ namespace Mgnd.Paired.Web.Controllers
         public enum ManageMessageId
         {
             ChangePasswordSuccess,
+
             SetPasswordSuccess,
+
             RemoveLoginSuccess,
+
             Error
         }
 
@@ -555,7 +563,9 @@ namespace Mgnd.Paired.Web.Controllers
             }
 
             public string LoginProvider { get; set; }
+
             public string RedirectUri { get; set; }
+
             public string UserId { get; set; }
 
             public override void ExecuteResult(ControllerContext context)
@@ -568,6 +578,7 @@ namespace Mgnd.Paired.Web.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+
         #endregion
     }
 }

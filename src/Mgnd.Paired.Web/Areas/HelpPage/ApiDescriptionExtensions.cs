@@ -26,9 +26,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage
             }
 
             StringBuilder friendlyPath = new StringBuilder();
-            friendlyPath.AppendFormat("{0}-{1}",
-                description.HttpMethod.Method,
-                localPath.Replace("/", "-").Replace("{", String.Empty).Replace("}", String.Empty));
+            friendlyPath.AppendFormat("{0}-{1}", description.HttpMethod.Method, localPath.Replace("/", "-").Replace("{", String.Empty).Replace("}", String.Empty));
             if (queryKeyString != null)
             {
                 friendlyPath.AppendFormat("_{0}", queryKeyString);

@@ -10,7 +10,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
     {
         public ModelNameAttribute(string name)
         {
-            Name = name;
+            this.Name = name;
         }
 
         public string Name { get; private set; }

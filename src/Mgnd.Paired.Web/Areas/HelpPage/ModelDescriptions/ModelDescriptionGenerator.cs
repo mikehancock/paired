@@ -165,7 +165,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
                 if (modelType != modelDescription.ModelType)
                 {
                     throw new InvalidOperationException(
-                        String.Format(
+                        string.Format(
                             CultureInfo.CurrentCulture,
                             "A model description could not be created. Duplicate model name '{0}' was found for types '{1}' and '{2}'. "
                             + "Use the [ModelName] attribute to change the model name for at least one of the types so that it has a unique name.",
@@ -189,25 +189,26 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
             if (modelType.IsGenericType)
             {
-                Type[] genericArguments = modelType.GetGenericArguments();
+                var genericArguments = modelType.GetGenericArguments();
 
                 if (genericArguments.Length == 1)
                 {
-                    Type enumerableType = typeof(IEnumerable<>).MakeGenericType(genericArguments);
+                    var enumerableType = typeof(IEnumerable<>).MakeGenericType(genericArguments);
                     if (enumerableType.IsAssignableFrom(modelType))
                     {
                         return GenerateCollectionModelDescription(modelType, genericArguments[0]);
                     }
                 }
+
                 if (genericArguments.Length == 2)
                 {
-                    Type dictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments);
+                    var dictionaryType = typeof(IDictionary<,>).MakeGenericType(genericArguments);
                     if (dictionaryType.IsAssignableFrom(modelType))
                     {
                         return GenerateDictionaryModelDescription(modelType, genericArguments[0], genericArguments[1]);
                     }
 
-                    Type keyValuePairType = typeof(KeyValuePair<,>).MakeGenericType(genericArguments);
+                    var keyValuePairType = typeof(KeyValuePair<,>).MakeGenericType(genericArguments);
                     if (keyValuePairType.IsAssignableFrom(modelType))
                     {
                         return GenerateKeyValuePairModelDescription(modelType, genericArguments[0], genericArguments[1]);
@@ -217,7 +218,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
             if (modelType.IsArray)
             {
-                Type elementType = modelType.GetElementType();
+                var elementType = modelType.GetElementType();
                 return GenerateCollectionModelDescription(modelType, elementType);
             }
 
@@ -243,7 +244,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
         private static string GetMemberName(MemberInfo member, bool hasDataContractAttribute)
         {
             var jsonProperty = member.GetCustomAttribute<JsonPropertyAttribute>();
-            if (jsonProperty != null && !String.IsNullOrEmpty(jsonProperty.PropertyName))
+            if (jsonProperty != null && !string.IsNullOrEmpty(jsonProperty.PropertyName))
             {
                 return jsonProperty.PropertyName;
             }
@@ -251,7 +252,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
             if (hasDataContractAttribute)
             {
                 var dataMember = member.GetCustomAttribute<DataMemberAttribute>();
-                if (dataMember != null && !String.IsNullOrEmpty(dataMember.Name))
+                if (dataMember != null && !string.IsNullOrEmpty(dataMember.Name))
                 {
                     return dataMember.Name;
                 }
@@ -268,7 +269,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
             var nonSerialized = member.GetCustomAttribute<NonSerializedAttribute>();
             var apiExplorerSetting = member.GetCustomAttribute<ApiExplorerSettingsAttribute>();
 
-            bool hasMemberAttribute = member.DeclaringType.IsEnum ? member.GetCustomAttribute<EnumMemberAttribute>() != null : member.GetCustomAttribute<DataMemberAttribute>() != null;
+            var hasMemberAttribute = member.DeclaringType.IsEnum ? member.GetCustomAttribute<EnumMemberAttribute>() != null : member.GetCustomAttribute<DataMemberAttribute>() != null;
 
             // Display member only if all the followings are true:
             // no JsonIgnoreAttribute
@@ -288,6 +289,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
             {
                 return documentation;
             }
+
             if (DocumentationProvider != null)
             {
                 documentation = DocumentationProvider.GetDocumentation(type);
@@ -325,10 +327,10 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
                         }
 
                         // Sort the rest based on alphabetic order of the documentation
-                        return String.Compare(x.Documentation, y.Documentation, StringComparison.OrdinalIgnoreCase);
+                        return string.Compare(x.Documentation, y.Documentation, StringComparison.OrdinalIgnoreCase);
                     });
 
-            foreach (ParameterAnnotation annotation in annotations)
+            foreach (var annotation in annotations)
             {
                 propertyModel.Annotations.Add(annotation);
             }
@@ -357,11 +359,11 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
             GeneratedModels.Add(complexModelDescription.Name, complexModelDescription);
             var hasDataContractAttribute = modelType.GetCustomAttribute<DataContractAttribute>() != null;
             var properties = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (PropertyInfo property in properties)
+            foreach (var property in properties)
             {
                 if (ShouldDisplayMember(property, hasDataContractAttribute))
                 {
-                    ParameterDescription propertyModel = new ParameterDescription { Name = GetMemberName(property, hasDataContractAttribute) };
+                    var propertyModel = new ParameterDescription { Name = GetMemberName(property, hasDataContractAttribute) };
 
                     if (DocumentationProvider != null)
                     {
@@ -375,11 +377,11 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
             }
 
             var fields = modelType.GetFields(BindingFlags.Public | BindingFlags.Instance);
-            foreach (FieldInfo field in fields)
+            foreach (var field in fields)
             {
                 if (ShouldDisplayMember(field, hasDataContractAttribute))
                 {
-                    ParameterDescription propertyModel = new ParameterDescription { Name = GetMemberName(field, hasDataContractAttribute) };
+                    var propertyModel = new ParameterDescription { Name = GetMemberName(field, hasDataContractAttribute) };
 
                     if (DocumentationProvider != null)
                     {
@@ -429,6 +431,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
                     enumDescription.Values.Add(enumValue);
                 }
             }
+
             GeneratedModels.Add(enumDescription.Name, enumDescription);
 
             return enumDescription;

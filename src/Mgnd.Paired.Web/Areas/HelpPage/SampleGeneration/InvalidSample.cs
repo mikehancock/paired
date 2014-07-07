@@ -13,15 +13,16 @@ namespace Mgnd.Paired.Web.Areas.HelpPage
             {
                 throw new ArgumentNullException("errorMessage");
             }
-            ErrorMessage = errorMessage;
+
+            this.ErrorMessage = errorMessage;
         }
 
         public string ErrorMessage { get; private set; }
 
         public override bool Equals(object obj)
         {
-            InvalidSample other = obj as InvalidSample;
-            return other != null && ErrorMessage == other.ErrorMessage;
+            var other = obj as InvalidSample;
+            return other != null && this.ErrorMessage == other.ErrorMessage;
         }
 
         public override int GetHashCode()

@@ -242,7 +242,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
         // Change this to provide different name for the member.
         private static string GetMemberName(MemberInfo member, bool hasDataContractAttribute)
         {
-            JsonPropertyAttribute jsonProperty = member.GetCustomAttribute<JsonPropertyAttribute>();
+            var jsonProperty = member.GetCustomAttribute<JsonPropertyAttribute>();
             if (jsonProperty != null && !String.IsNullOrEmpty(jsonProperty.PropertyName))
             {
                 return jsonProperty.PropertyName;
@@ -250,7 +250,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
             if (hasDataContractAttribute)
             {
-                DataMemberAttribute dataMember = member.GetCustomAttribute<DataMemberAttribute>();
+                var dataMember = member.GetCustomAttribute<DataMemberAttribute>();
                 if (dataMember != null && !String.IsNullOrEmpty(dataMember.Name))
                 {
                     return dataMember.Name;
@@ -262,11 +262,11 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private static bool ShouldDisplayMember(MemberInfo member, bool hasDataContractAttribute)
         {
-            JsonIgnoreAttribute jsonIgnore = member.GetCustomAttribute<JsonIgnoreAttribute>();
-            XmlIgnoreAttribute xmlIgnore = member.GetCustomAttribute<XmlIgnoreAttribute>();
-            IgnoreDataMemberAttribute ignoreDataMember = member.GetCustomAttribute<IgnoreDataMemberAttribute>();
-            NonSerializedAttribute nonSerialized = member.GetCustomAttribute<NonSerializedAttribute>();
-            ApiExplorerSettingsAttribute apiExplorerSetting = member.GetCustomAttribute<ApiExplorerSettingsAttribute>();
+            var jsonIgnore = member.GetCustomAttribute<JsonIgnoreAttribute>();
+            var xmlIgnore = member.GetCustomAttribute<XmlIgnoreAttribute>();
+            var ignoreDataMember = member.GetCustomAttribute<IgnoreDataMemberAttribute>();
+            var nonSerialized = member.GetCustomAttribute<NonSerializedAttribute>();
+            var apiExplorerSetting = member.GetCustomAttribute<ApiExplorerSettingsAttribute>();
 
             bool hasMemberAttribute = member.DeclaringType.IsEnum ? member.GetCustomAttribute<EnumMemberAttribute>() != null : member.GetCustomAttribute<DataMemberAttribute>() != null;
 
@@ -298,10 +298,10 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private void GenerateAnnotations(MemberInfo property, ParameterDescription propertyModel)
         {
-            List<ParameterAnnotation> annotations = new List<ParameterAnnotation>();
+            var annotations = new List<ParameterAnnotation>();
 
-            IEnumerable<Attribute> attributes = property.GetCustomAttributes();
-            foreach (Attribute attribute in attributes)
+            var attributes = property.GetCustomAttributes();
+            foreach (var attribute in attributes)
             {
                 Func<object, string> textGenerator;
                 if (AnnotationTextGenerator.TryGetValue(attribute.GetType(), out textGenerator))
@@ -336,7 +336,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private CollectionModelDescription GenerateCollectionModelDescription(Type modelType, Type elementType)
         {
-            ModelDescription collectionModelDescription = GetOrCreateModelDescription(elementType);
+            var collectionModelDescription = GetOrCreateModelDescription(elementType);
             if (collectionModelDescription != null)
             {
                 return new CollectionModelDescription { Name = ModelNameHelper.GetModelName(modelType), ModelType = modelType, ElementDescription = collectionModelDescription };
@@ -347,7 +347,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private ModelDescription GenerateComplexTypeModelDescription(Type modelType)
         {
-            ComplexTypeModelDescription complexModelDescription = new ComplexTypeModelDescription
+            var complexModelDescription = new ComplexTypeModelDescription
                                                                       {
                                                                           Name = ModelNameHelper.GetModelName(modelType),
                                                                           ModelType = modelType,
@@ -355,8 +355,8 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
                                                                       };
 
             GeneratedModels.Add(complexModelDescription.Name, complexModelDescription);
-            bool hasDataContractAttribute = modelType.GetCustomAttribute<DataContractAttribute>() != null;
-            PropertyInfo[] properties = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var hasDataContractAttribute = modelType.GetCustomAttribute<DataContractAttribute>() != null;
+            var properties = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo property in properties)
             {
                 if (ShouldDisplayMember(property, hasDataContractAttribute))
@@ -374,7 +374,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
                 }
             }
 
-            FieldInfo[] fields = modelType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            var fields = modelType.GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields)
             {
                 if (ShouldDisplayMember(field, hasDataContractAttribute))
@@ -396,8 +396,8 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private DictionaryModelDescription GenerateDictionaryModelDescription(Type modelType, Type keyType, Type valueType)
         {
-            ModelDescription keyModelDescription = GetOrCreateModelDescription(keyType);
-            ModelDescription valueModelDescription = GetOrCreateModelDescription(valueType);
+            var keyModelDescription = GetOrCreateModelDescription(keyType);
+            var valueModelDescription = GetOrCreateModelDescription(valueType);
 
             return new DictionaryModelDescription
                        {
@@ -410,18 +410,18 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private EnumTypeModelDescription GenerateEnumTypeModelDescription(Type modelType)
         {
-            EnumTypeModelDescription enumDescription = new EnumTypeModelDescription
+            var enumDescription = new EnumTypeModelDescription
                                                            {
                                                                Name = ModelNameHelper.GetModelName(modelType),
                                                                ModelType = modelType,
                                                                Documentation = CreateDefaultDocumentation(modelType)
                                                            };
-            bool hasDataContractAttribute = modelType.GetCustomAttribute<DataContractAttribute>() != null;
-            foreach (FieldInfo field in modelType.GetFields(BindingFlags.Public | BindingFlags.Static))
+            var hasDataContractAttribute = modelType.GetCustomAttribute<DataContractAttribute>() != null;
+            foreach (var field in modelType.GetFields(BindingFlags.Public | BindingFlags.Static))
             {
                 if (ShouldDisplayMember(field, hasDataContractAttribute))
                 {
-                    EnumValueDescription enumValue = new EnumValueDescription { Name = field.Name, Value = field.GetRawConstantValue().ToString() };
+                    var enumValue = new EnumValueDescription { Name = field.Name, Value = field.GetRawConstantValue().ToString() };
                     if (DocumentationProvider != null)
                     {
                         enumValue.Documentation = DocumentationProvider.GetDocumentation(field);
@@ -436,8 +436,8 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private KeyValuePairModelDescription GenerateKeyValuePairModelDescription(Type modelType, Type keyType, Type valueType)
         {
-            ModelDescription keyModelDescription = GetOrCreateModelDescription(keyType);
-            ModelDescription valueModelDescription = GetOrCreateModelDescription(valueType);
+            var keyModelDescription = GetOrCreateModelDescription(keyType);
+            var valueModelDescription = GetOrCreateModelDescription(valueType);
 
             return new KeyValuePairModelDescription
                        {
@@ -450,7 +450,7 @@ namespace Mgnd.Paired.Web.Areas.HelpPage.ModelDescriptions
 
         private ModelDescription GenerateSimpleTypeModelDescription(Type modelType)
         {
-            SimpleTypeModelDescription simpleModelDescription = new SimpleTypeModelDescription
+            var simpleModelDescription = new SimpleTypeModelDescription
                                                                     {
                                                                         Name = ModelNameHelper.GetModelName(modelType),
                                                                         ModelType = modelType,
